@@ -112,6 +112,6 @@ chain = (
     | parser
 )
 
-res = chain.invoke({"question": "can you find the code snippet about GroundMesh and return that as a reply?"})
+res = chain.invoke({"question": "can you find the code snippet about mesh and return that as a reply?"})
 
 print(res)
