@@ -26,7 +26,7 @@
     </nav>
   </div>
 
-  
+
   <div class="container">
 
     {% block body %}
@@ -37,14 +37,14 @@
   <script>
 
     let btn = document.getElementById("showResult");
-    btn.addEventListener("click", function(event){
+    btn.addEventListener("click", function (event) {
       event.preventDefault();
       let queryPrompt = document.getElementById("prompt").value;
-      
+
 
       fetch('/', {
         method: "POST",
-        headers:{
+        headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(queryPrompt)
@@ -52,10 +52,16 @@
         .then(response => response.json())
         .then(data => {
           let resultContainer = document.querySelector(".result");
-          resultContainer.innerHTML = data.result;
+          data = data.responseback['result'];
+          console.log(data);
 
+          data.forEach(element => {
+            let dynamic_lst = document.createElement('p');
+            dynamic_lst.innerHTML = element
+            resultContainer.appendChild(dynamic_lst);
 
-
+          });
+          
         })
         .catch((error) => {
           console.error('Error:', error);

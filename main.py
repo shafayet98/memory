@@ -4,6 +4,7 @@ from langchain_openai import ChatOpenAI
 from langchain_openai.embeddings import OpenAIEmbeddings
 from langchain_community.llms import Ollama
 from langchain_core.output_parsers import StrOutputParser
+from langchain_core.output_parsers import JsonOutputParser
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.prompts import PromptTemplate
 from langchain_community.vectorstores import DocArrayInMemorySearch
@@ -25,7 +26,8 @@ API_KEY = os.getenv("OPENAI_API_KEY")
 MODEL = 'gpt-4o'
 model = ChatOpenAI(api_key=API_KEY, model=MODEL)
 embeddings = OpenAIEmbeddings()
-parser = StrOutputParser()
+# parser = StrOutputParser()
+parser = JsonOutputParser()
 
 def extract_text_from_images(folder_path):
 
@@ -76,12 +78,17 @@ def load_pdf_memory():
 def perform_rag(pages, query):
     template = """
 
-    Answer the questions based on the context below. The context is full of code snippets. If you cannot, reply with "I don't know"
+    Answer the questions based on the context below. The context is full of code snippets. If you cannot, reply with "Sorry, I could not find it."
 
     Context: {context}
     Question: {question}
 
-    Return me only the code that you have found.
+    Return me only the code that you have found in a JSON format. The response should be like this:
+    "result": [
+        "first line of code",
+        "second line of code"
+    ]
+    
     """
 
     prompt = PromptTemplate.from_template(template)
@@ -122,8 +129,10 @@ def index():
         initiate()
         pages = load_pdf_memory()
         responseback = perform_rag(pages, query)
+        print(type(responseback))
+        print(responseback)
 
-        return jsonify({'message': 'Form received!', 'result': responseback})
+        return jsonify({'message': 'Form received!', 'responseback': responseback})
 
     
 
