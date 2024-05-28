@@ -1,8 +1,4 @@
 from flask import Flask, Response, render_template, url_for, request, jsonify
-import requests
-import json
-import time
-import base64
 from flask_cors import CORS
 from langchain_openai import ChatOpenAI
 from langchain_openai.embeddings import OpenAIEmbeddings
@@ -32,6 +28,12 @@ embeddings = OpenAIEmbeddings()
 parser = StrOutputParser()
 
 def extract_text_from_images(folder_path):
+
+    isExist = os.path.exists('generated.txt')
+    if (isExist == True):
+        os.remove('generated.txt')
+        
+
     # Check if the folder exists
     if not os.path.exists(folder_path):
         print(f"The folder {folder_path} does not exist.")
@@ -59,7 +61,7 @@ def generate_pdf():
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("helvetica", size = 12)
-    with open('sample.txt', 'r') as file:
+    with open('generated.txt', 'r') as file:
         for line in file:
             pdf.cell(200, 10, txt = line, ln = True, align = 'L')
     # Save the PDF with name .pdf
@@ -68,12 +70,12 @@ def generate_pdf():
 
 def load_pdf_memory():
     # load the pdf
-    loader = PyPDFLoader("sample.pdf")
+    loader = PyPDFLoader("generated.pdf")
     pages = loader.load_and_split()
     return pages
 
 
-def perform_rag(pages):
+def perform_rag(pages, query):
     template = """
 
     Answer the questions based on the context below. The context is full of code snippets. If you cannot, reply with "I don't know"
@@ -81,6 +83,7 @@ def perform_rag(pages):
     Context: {context}
     Question: {question}
 
+    Return me only the code that you have found.
     """
 
     prompt = PromptTemplate.from_template(template)
@@ -103,23 +106,28 @@ def perform_rag(pages):
         | parser
     )
 
-    res = chain.invoke({"question": "can you find the code snippet about mesh and return that as a reply?"})
+    responseback = chain.invoke({"question": query})
 
-    return res
+    return responseback
+
+def initiate():
+    folder_path = 'screenshots/'
+    extract_text_from_images(folder_path)
+    generate_pdf()
+    
 
 @app.route('/',methods = ['GET', 'POST'])
 def index():
-
+    
     if request.method == "POST":
-        data = request.json
-        print(data)
-        return jsonify({'message': 'Form received!', 'result': data})
+        query = request.json
+        initiate()
+        pages = load_pdf_memory()
+        responseback = perform_rag(pages, query)
 
-    # folder_path = 'screenshots/'
-    # extract_text_from_images(folder_path)
-    # generate_pdf()
-    # pages = load_pdf_memory()
-    # perform_rag(pages)
+        return jsonify({'message': 'Form received!', 'result': responseback})
+
+    
 
     return render_template('index.html')
 

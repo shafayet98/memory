@@ -7,17 +7,21 @@
 {% block body %}
 
 <!--  -->
-<div class="row">
-    <div class="col-sm-10">
+<code class="result"></code>
+<div class="row fixed-bottom m-5">
+    <div class="col-sm-11">
         <form id="prompt-form">
             <div class="form-group">
                 <label for="prompt"></label>
-                <textarea class="form-control" id="prompt" rows="1" placeholder="aske me about your old codes..." required></textarea>
+                <textarea class="form-control" id="prompt" rows="1" placeholder="ask me about your old codes..." required></textarea>
               </div>
         </form>
     </div>
-    <div class="col-sm-2">
-        <button id = "showResult" type="submit" class="btn btn-warning mt-4">Find My Code</button>
+    <div class="col-sm-1">
+        <center>
+            <button id = "showResult" type="submit" class="btn btn-warning mt-4">Find</button>
+        </center>
+        
     </div>
 </div>
 

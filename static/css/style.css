@@ -1,3 +1,8 @@
 #prompt-form{
     margin: 0 !important;
 }
+
+#showResult{
+    padding-left: 35px;
+    padding-right: 35px;
+}
