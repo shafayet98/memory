@@ -32,8 +32,6 @@ def extract_text_from_images(folder_path):
     isExist = os.path.exists('generated.txt')
     if (isExist == True):
         os.remove('generated.txt')
-        
-
     # Check if the folder exists
     if not os.path.exists(folder_path):
         print(f"The folder {folder_path} does not exist.")
@@ -130,17 +128,6 @@ def index():
     
 
     return render_template('index.html')
-
-
-
-
-
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
