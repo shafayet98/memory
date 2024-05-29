@@ -3,6 +3,8 @@ test.pdf
 test_02.pdf
 sample.pdf
 sample.txt
+generated.pdf
+generated.txt
 .env
 /screenshots
 /path

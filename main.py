@@ -126,7 +126,7 @@ def index():
     
     if request.method == "POST":
         query = request.json
-        initiate()
+        
         pages = load_pdf_memory()
         responseback = perform_rag(pages, query)
         print(type(responseback))
@@ -140,4 +140,5 @@ def index():
 
 
 if __name__ == "__main__":
+    initiate()
     app.run(debug=True, host='0.0.0.0', port=8081)
